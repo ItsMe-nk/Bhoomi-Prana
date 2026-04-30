@@ -19,22 +19,15 @@ import {
   Flame, 
   AlertTriangle,
   Globe,
-  Award,
   ChevronRight,
-  Zap,
   TrendingUp,
-  Target,
   TreePine,
-  Apple
+  Apple,
+  Mail,
+  ArrowUpRight,
+  Shield,
+  Heart
 } from 'lucide-react';
-
-// --- XP System Types ---
-interface XPNotification {
-  id: number;
-  amount: number;
-  x: number;
-  y: number;
-}
 
 // --- Data Types ---
 interface Program {
@@ -75,47 +68,7 @@ const programs: Program[] = [
 
 // --- Components ---
 
-interface XPPopupProps {
-  amount: number;
-  x: number;
-  y: number;
-  onComplete: () => void;
-}
-
-const XPPopup: React.FC<XPPopupProps> = ({ amount, x, y, onComplete }) => {
-  const isLevelUp = amount === 0;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: y, x: isLevelUp ? x - 100 : x, scale: 0.5 }}
-      animate={{ 
-        opacity: [0, 1, 1, 0], 
-        y: y - 150, 
-        scale: isLevelUp ? 2 : 1.2,
-        rotate: isLevelUp ? [0, -5, 5, 0] : 0
-      }}
-      transition={{ duration: isLevelUp ? 3 : 1.5 }}
-      onAnimationComplete={onComplete}
-      className={`fixed pointer-events-none z-[9999] flex items-center gap-2 font-black italic drop-shadow-2xl ${
-        isLevelUp ? 'text-clay text-5xl bg-sand/90 px-8 py-4 rounded-full border-4 border-clay' : 'text-clay text-2xl'
-      }`}
-    >
-      {isLevelUp ? (
-        <div className="flex items-center gap-4">
-          <Award className="w-10 h-10" />
-          LEVEL UP!
-        </div>
-      ) : (
-        <>
-          <Zap className="fill-clay" />
-          +{amount} XP
-        </>
-      )}
-    </motion.div>
-  );
-};
-
-const Navbar = ({ xp, level, onJoin }: { xp: number; level: number; onJoin: (e: React.MouseEvent) => void }) => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -134,9 +87,10 @@ const Navbar = ({ xp, level, onJoin }: { xp: number; level: number; onJoin: (e: 
     >
       <div className="container mx-auto px-8 flex justify-between items-center">
         <motion.div 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
           className="flex items-center gap-2 group cursor-pointer"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <div className="w-10 h-10 bg-clay rounded-lg rotate-12 flex items-center justify-center group-hover:rotate-0 transition-all duration-500">
              <Sprout className="text-white w-6 h-6" />
@@ -145,25 +99,6 @@ const Navbar = ({ xp, level, onJoin }: { xp: number; level: number; onJoin: (e: 
         </motion.div>
         
         <div className="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-sage">
-          <div className="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 group cursor-default">
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] opacity-40 leading-none mb-1">OPERATIVE LVL</span>
-              <span className="text-xl font-black italic text-stone leading-none line-through decoration-clay/30 group-hover:decoration-clay transition-all">{level}</span>
-            </div>
-            <div className="w-px h-8 bg-white/10" />
-            <div className="flex flex-col items-start min-w-[80px]">
-               <span className="text-[10px] opacity-40 leading-none mb-1">XP SYNC</span>
-               <div className="w-full h-1.5 bg-earth-900 rounded-full mt-1 overflow-hidden">
-                  <motion.div 
-                    initial={false}
-                    animate={{ width: `${(xp % 1000) / 10}%` }}
-                    className="h-full bg-clay" 
-                  />
-               </div>
-               <span className="text-[10px] font-mono mt-1 text-stone/60">{xp % 1000} / 1000</span>
-            </div>
-          </div>
-
           {['Programs', 'Impact', 'Fellows', 'Roadmap'].map((item) => (
             <motion.a 
               key={item} 
@@ -176,12 +111,11 @@ const Navbar = ({ xp, level, onJoin }: { xp: number; level: number; onJoin: (e: 
             </motion.a>
           ))}
           <motion.button 
-            onClick={onJoin}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="px-6 py-2 bg-clay rounded-full text-white border-b-4 border-earth-brown active:translate-y-1 active:border-b-0 font-bold shadow-lg shadow-clay/20"
           >
-            JOIN / LVL {level}
+            JOIN THE QUEST
           </motion.button>
         </div>
 
@@ -204,10 +138,9 @@ const Navbar = ({ xp, level, onJoin }: { xp: number; level: number; onJoin: (e: 
               </a>
             ))}
             <button 
-              onClick={onJoin}
               className="bg-clay text-white px-6 py-4 rounded-2xl font-black active:scale-95 transition-transform"
             >
-              JOIN THE QUEST / LVL {level}
+              JOIN THE QUEST
             </button>
           </motion.div>
         )}
@@ -216,7 +149,7 @@ const Navbar = ({ xp, level, onJoin }: { xp: number; level: number; onJoin: (e: 
   );
 };
 
-const Hero = ({ onQuestStart }: { onQuestStart: (e: React.MouseEvent) => void }) => {
+const Hero = () => {
   return (
     <section className="min-h-screen pt-32 pb-20 relative flex items-center overflow-hidden">
       {/* Background Decor */}
@@ -282,12 +215,16 @@ const Hero = ({ onQuestStart }: { onQuestStart: (e: React.MouseEvent) => void })
             transition={{ duration: 0.5, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-6"
           >
-            <button className="btn-earth" onClick={onQuestStart}>
-              START YOUR QUEST
-            </button>
-            <button className="btn-outline-earth">
-              WATCH IMPACT
-            </button>
+            <a href="#planting-game">
+              <button className="btn-earth w-full sm:w-auto">
+                START YOUR QUEST
+              </button>
+            </a>
+            <a href="#impact-sync">
+              <button className="btn-outline-earth w-full sm:w-auto">
+                WATCH IMPACT
+              </button>
+            </a>
           </motion.div>
         </div>
 
@@ -416,7 +353,7 @@ interface PlantedTree {
   scale: number;
 }
 
-const PlantingGame = ({ onPlant }: { onPlant: (amount: number, x: number, y: number) => void }) => {
+const PlantingGame = () => {
   const [trees, setTrees] = useState<PlantedTree[]>([]);
   const [selectedType, setSelectedType] = useState('Native');
   
@@ -442,7 +379,6 @@ const PlantingGame = ({ onPlant }: { onPlant: (amount: number, x: number, y: num
     };
     
     setTrees(prev => [...prev, newTree]);
-    onPlant(type.xp, e.clientX, e.clientY);
   };
 
   const totalCO2 = trees.reduce((acc, tree) => acc + (treeTypes.find(t => t.id === tree.type)?.co2 || 0), 0);
@@ -474,7 +410,7 @@ const PlantingGame = ({ onPlant }: { onPlant: (amount: number, x: number, y: num
                     <type.icon className={selectedType === type.id ? 'text-white' : type.color} />
                     <span className="font-bold uppercase tracking-wider">{type.label}</span>
                   </div>
-                  <div className="text-xs font-mono opacity-60">+{type.xp} XP</div>
+                  <div className="text-xs font-mono opacity-60">RESTORATION UNIT</div>
                 </motion.button>
               ))}
             </div>
@@ -544,7 +480,9 @@ const PlantingGame = ({ onPlant }: { onPlant: (amount: number, x: number, y: num
             {trees.length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="text-center">
-                  <Target className="w-16 h-16 text-sage/20 mx-auto mb-4 animate-pulse" />
+                  <div className="w-16 h-16 bg-sage/10 rounded-full mx-auto mb-4 animate-pulse flex items-center justify-center">
+                    <Sprout className="text-sage/40 w-8 h-8" />
+                  </div>
                   <p className="text-sage/30 font-black italic uppercase tracking-[0.3em]">TAP TO DEPLOY BIOTA</p>
                 </div>
               </div>
@@ -562,7 +500,7 @@ const PlantingGame = ({ onPlant }: { onPlant: (amount: number, x: number, y: num
   );
 };
 
-const ProgramSection = ({ onProgramAccess }: { onProgramAccess: (e: React.MouseEvent) => void }) => {
+const ProgramSection = () => {
   return (
     <section className="py-32 px-8" id="programs">
       <div className="container mx-auto">
@@ -616,7 +554,6 @@ const ProgramSection = ({ onProgramAccess }: { onProgramAccess: (e: React.MouseE
               </div>
 
               <motion.button 
-                onClick={onProgramAccess}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-4 border border-white/10 rounded-xl font-black italic tracking-widest uppercase text-xs text-stone group-hover:bg-sand group-hover:text-earth-950 transition-all"
@@ -631,15 +568,12 @@ const ProgramSection = ({ onProgramAccess }: { onProgramAccess: (e: React.MouseE
   );
 };
 
-const ImpactGame = ({ onSimulate }: { onSimulate: (amount: number, e: { clientX: number; clientY: number }) => void }) => {
+const ImpactGame = () => {
   const [carbon, setCarbon] = useState(0);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value) * 120;
     setCarbon(val);
-    if (val % 1000 === 0) {
-      onSimulate(50, { clientX: e.clientX, clientY: e.clientY });
-    }
   };
 
   return (
@@ -770,7 +704,7 @@ const FellowsSection = () => {
   );
 };
 
-const Roadmap = ({ onPhaseEngage }: { onPhaseEngage: (e: React.MouseEvent) => void }) => {
+const Roadmap = () => {
   return (
     <section className="py-32 bg-earth-950" id="roadmap">
       <div className="container mx-auto px-8 text-center mb-24">
@@ -796,7 +730,6 @@ const Roadmap = ({ onPhaseEngage }: { onPhaseEngage: (e: React.MouseEvent) => vo
               viewport={{ once: true }}
               transition={{ delay: idx * 0.2 }}
               whileHover={{ x: 10 }}
-              onClick={onPhaseEngage}
               className="organic-card p-10 border-l-8 border-l-clay hover:bg-white/10"
             >
                <div className="flex justify-between items-start mb-6">
@@ -902,33 +835,83 @@ const Footer = () => {
   );
 };
 
+const Newsletter = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  return (
+    <section className="py-32 bg-earth-900 px-8 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-clay/5 blur-[120px] -z-10" />
+      <div className="container mx-auto max-w-4xl">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="organic-card p-12 md:p-20 text-center relative overflow-hidden"
+        >
+          <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-clay/0 via-clay to-clay/0" />
+          <div className="mono-tag justify-center mb-8 text-clay">// JOIN THE INNER CIRCLE //</div>
+          <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-stone mb-8 leading-none">Stay Synced with <br /> the Soil.</h2>
+          <p className="text-sage/60 mb-12 text-lg italic max-w-xl mx-auto">Get monthly reports on carbon sequestration, district-wise impact maps, and early access to Krishi Fellow cohorts.</p>
+          
+          <form className="relative max-w-md mx-auto" onSubmit={(e) => { e.preventDefault(); setSubscribed(true); }}>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <input 
+                type="email" 
+                placeholder="OPERATIVE EMAIL" 
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-stone font-bold placeholder:text-sage/20 focus:outline-hidden focus:border-clay transition-colors"
+              />
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-clay text-white px-8 py-4 rounded-xl font-black italic tracking-widest uppercase text-xs flex items-center justify-center gap-2"
+              >
+                {subscribed ? 'SYNCED' : 'INITIALIZE'}
+                {subscribed ? <ShieldCheck className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+              </motion.button>
+            </div>
+            {subscribed && (
+              <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-sage text-xs font-bold mt-4 tracking-widest"
+              >
+                REGISTRATION CONFIRMED. CHECK YOUR COMMS.
+              </motion.p>
+            )}
+          </form>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const TrustSection = () => {
+  return (
+    <section className="py-20 border-t border-b border-white/5 bg-earth-950 px-8">
+      <div className="container mx-auto px-8">
+        <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+          {[
+            { icon: Shield, label: 'Verified Credits' },
+            { icon: Globe, label: 'U.N. SDGs Support' },
+            { icon: Heart, label: 'Farmer First' },
+            { icon: BarChart3, label: 'Real-time Data' }
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <item.icon className="w-6 h-6 text-sage" />
+              <span className="text-sm font-black italic tracking-widest uppercase text-stone">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export default function App() {
-  const [xp, setXp] = useState(0);
-  const [notifications, setNotifications] = useState<XPNotification[]>([]);
-  
-  const level = Math.floor(xp / 1000) + 1;
-
-  useEffect(() => {
-    if (level > 1) {
-      // Use center of screen for Level Up celebration
-      gainXP(0, window.innerWidth / 2, window.innerHeight / 2);
-    }
-  }, [level]);
-
-  const gainXP = (amount: number, x: number, y: number) => {
-    setXp(prev => prev + amount);
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, amount, x, y }]);
-  };
-
-  const removeNotification = (id: number) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
-
-  const handleInteraction = (amount: number) => (e: React.MouseEvent) => {
-    gainXP(amount, e.clientX, e.clientY);
-  };
-
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -940,26 +923,16 @@ export default function App() {
     <div className="bg-earth-950 min-h-screen selection:bg-clay selection:text-white">
       <motion.div className="scroll-indicator" style={{ scaleX }} />
       
-      <AnimatePresence>
-        {notifications.map(n => (
-          <XPPopup 
-            key={n.id} 
-            amount={n.amount} 
-            x={n.x} 
-            y={n.y} 
-            onComplete={() => removeNotification(n.id)} 
-          />
-        ))}
-      </AnimatePresence>
-
-      <Navbar xp={xp} level={level} onJoin={handleInteraction(500)} />
-      <Hero onQuestStart={handleInteraction(250)} />
+      <Navbar />
+      <Hero />
       <ProblemTriangle />
-      <ProgramSection onProgramAccess={handleInteraction(150)} />
-      <PlantingGame onPlant={(amount, x, y) => gainXP(amount, x, y)} />
-      <ImpactGame onSimulate={(amount, pos) => gainXP(amount, pos.clientX, pos.clientY)} />
+      <ProgramSection />
+      <PlantingGame />
+      <ImpactGame />
       <FellowsSection />
-      <Roadmap onPhaseEngage={handleInteraction(100)} />
+      <Roadmap />
+      <TrustSection />
+      <Newsletter />
       <Footer />
       
       {/* Background Ambience */}
