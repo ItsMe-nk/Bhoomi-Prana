@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useInView } from 'motion/react';
 import { 
   Wind, 
@@ -20,8 +20,21 @@ import {
   AlertTriangle,
   Globe,
   Award,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  TrendingUp,
+  Target,
+  TreePine,
+  Apple
 } from 'lucide-react';
+
+// --- XP System Types ---
+interface XPNotification {
+  id: number;
+  amount: number;
+  x: number;
+  y: number;
+}
 
 // --- Data Types ---
 interface Program {
@@ -62,7 +75,47 @@ const programs: Program[] = [
 
 // --- Components ---
 
-const Navbar = () => {
+interface XPPopupProps {
+  amount: number;
+  x: number;
+  y: number;
+  onComplete: () => void;
+}
+
+const XPPopup: React.FC<XPPopupProps> = ({ amount, x, y, onComplete }) => {
+  const isLevelUp = amount === 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: y, x: isLevelUp ? x - 100 : x, scale: 0.5 }}
+      animate={{ 
+        opacity: [0, 1, 1, 0], 
+        y: y - 150, 
+        scale: isLevelUp ? 2 : 1.2,
+        rotate: isLevelUp ? [0, -5, 5, 0] : 0
+      }}
+      transition={{ duration: isLevelUp ? 3 : 1.5 }}
+      onAnimationComplete={onComplete}
+      className={`fixed pointer-events-none z-[9999] flex items-center gap-2 font-black italic drop-shadow-2xl ${
+        isLevelUp ? 'text-clay text-5xl bg-sand/90 px-8 py-4 rounded-full border-4 border-clay' : 'text-clay text-2xl'
+      }`}
+    >
+      {isLevelUp ? (
+        <div className="flex items-center gap-4">
+          <Award className="w-10 h-10" />
+          LEVEL UP!
+        </div>
+      ) : (
+        <>
+          <Zap className="fill-clay" />
+          +{amount} XP
+        </>
+      )}
+    </motion.div>
+  );
+};
+
+const Navbar = ({ xp, level, onJoin }: { xp: number; level: number; onJoin: (e: React.MouseEvent) => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -92,6 +145,25 @@ const Navbar = () => {
         </motion.div>
         
         <div className="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-sage">
+          <div className="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 group cursor-default">
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] opacity-40 leading-none mb-1">OPERATIVE LVL</span>
+              <span className="text-xl font-black italic text-stone leading-none line-through decoration-clay/30 group-hover:decoration-clay transition-all">{level}</span>
+            </div>
+            <div className="w-px h-8 bg-white/10" />
+            <div className="flex flex-col items-start min-w-[80px]">
+               <span className="text-[10px] opacity-40 leading-none mb-1">XP SYNC</span>
+               <div className="w-full h-1.5 bg-earth-900 rounded-full mt-1 overflow-hidden">
+                  <motion.div 
+                    initial={false}
+                    animate={{ width: `${(xp % 1000) / 10}%` }}
+                    className="h-full bg-clay" 
+                  />
+               </div>
+               <span className="text-[10px] font-mono mt-1 text-stone/60">{xp % 1000} / 1000</span>
+            </div>
+          </div>
+
           {['Programs', 'Impact', 'Fellows', 'Roadmap'].map((item) => (
             <motion.a 
               key={item} 
@@ -104,11 +176,12 @@ const Navbar = () => {
             </motion.a>
           ))}
           <motion.button 
+            onClick={onJoin}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="px-6 py-2 bg-clay rounded-full text-white border-b-4 border-earth-brown active:translate-y-1 active:border-b-0 font-bold shadow-lg shadow-clay/20"
           >
-            JOIN / LVL 1
+            JOIN / LVL {level}
           </motion.button>
         </div>
 
@@ -130,8 +203,11 @@ const Navbar = () => {
                 {item}
               </a>
             ))}
-            <button className="bg-clay text-white px-6 py-4 rounded-2xl font-black">
-              JOIN THE QUEST
+            <button 
+              onClick={onJoin}
+              className="bg-clay text-white px-6 py-4 rounded-2xl font-black active:scale-95 transition-transform"
+            >
+              JOIN THE QUEST / LVL {level}
             </button>
           </motion.div>
         )}
@@ -140,7 +216,7 @@ const Navbar = () => {
   );
 };
 
-const Hero = () => {
+const Hero = ({ onQuestStart }: { onQuestStart: (e: React.MouseEvent) => void }) => {
   return (
     <section className="min-h-screen pt-32 pb-20 relative flex items-center overflow-hidden">
       {/* Background Decor */}
@@ -206,7 +282,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-6"
           >
-            <button className="btn-earth">
+            <button className="btn-earth" onClick={onQuestStart}>
               START YOUR QUEST
             </button>
             <button className="btn-outline-earth">
@@ -331,7 +407,162 @@ const ProblemTriangle = () => {
   );
 };
 
-const ProgramSection = () => {
+// --- Planting Game Types ---
+interface PlantedTree {
+  id: number;
+  type: string;
+  x: number;
+  y: number;
+  scale: number;
+}
+
+const PlantingGame = ({ onPlant }: { onPlant: (amount: number, x: number, y: number) => void }) => {
+  const [trees, setTrees] = useState<PlantedTree[]>([]);
+  const [selectedType, setSelectedType] = useState('Native');
+  
+  const treeTypes = [
+    { id: 'Native', label: 'Native Forest', icon: TreePine, xp: 50, co2: 2.5, water: 100, color: 'text-moss' },
+    { id: 'Fruit', label: 'Metti Fruit', icon: Apple, xp: 80, co2: 1.8, water: 45, color: 'text-clay' },
+    { id: 'Medicinal', label: 'Ayurvedic', icon: Leaf, xp: 120, co2: 0.8, water: 30, color: 'text-sage' },
+  ];
+
+  const handlePlotClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const type = treeTypes.find(t => t.id === selectedType)!;
+    
+    const newTree: PlantedTree = {
+      id: Date.now(),
+      type: selectedType,
+      x,
+      y,
+      scale: 0.5 + Math.random() * 0.5
+    };
+    
+    setTrees(prev => [...prev, newTree]);
+    onPlant(type.xp, e.clientX, e.clientY);
+  };
+
+  const totalCO2 = trees.reduce((acc, tree) => acc + (treeTypes.find(t => t.id === tree.type)?.co2 || 0), 0);
+  const totalWater = trees.reduce((acc, tree) => acc + (treeTypes.find(t => t.id === tree.type)?.water || 0), 0);
+
+  return (
+    <section className="py-32 bg-earth-900 px-8" id="planting-game">
+      <div className="container mx-auto">
+        <div className="flex flex-col lg:flex-row gap-12 items-start">
+          <div className="lg:w-1/3">
+            <div className="mono-tag mb-6 text-sage">// RESTORATION FIELD //</div>
+            <h2 className="text-5xl font-black italic uppercase tracking-tighter text-stone mb-8">Deploy Your <br /> Bio-Assets.</h2>
+            <p className="text-sage/70 mb-10 text-lg italic">Select a protocol below and click on the field to start the restoration cycle. Every tree planted increases the district's sync rate.</p>
+            
+            <div className="space-y-4">
+              {treeTypes.map(type => (
+                <motion.button
+                  key={type.id}
+                  whileHover={{ x: 10 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedType(type.id)}
+                  className={`w-full p-6 rounded-2xl border flex items-center justify-between transition-all ${
+                    selectedType === type.id 
+                    ? 'bg-clay border-clay text-white shadow-xl shadow-clay/20' 
+                    : 'bg-white/5 border-white/10 text-sage hover:bg-white/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <type.icon className={selectedType === type.id ? 'text-white' : type.color} />
+                    <span className="font-bold uppercase tracking-wider">{type.label}</span>
+                  </div>
+                  <div className="text-xs font-mono opacity-60">+{type.xp} XP</div>
+                </motion.button>
+              ))}
+            </div>
+
+            <div className="mt-12 organic-card p-8 border-clay/30 bg-clay/5">
+              <div className="flex justify-between items-center mb-6">
+                <span className="mono-tag text-clay">FIELD IMPACT</span>
+                <TrendingUp className="text-clay w-5 h-5" />
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between text-xs font-bold uppercase mb-2">
+                    <span>CO2 Sync Rate</span>
+                    <span className="text-stone">{totalCO2.toFixed(1)}kg / day</span>
+                  </div>
+                  <div className="w-full h-1 bg-black/20 rounded-full overflow-hidden">
+                    <motion.div 
+                      animate={{ width: `${Math.min(totalCO2 * 5, 100)}%` }}
+                      className="h-full bg-clay" 
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs font-bold uppercase mb-2">
+                    <span>Water Table Recharge</span>
+                    <span className="text-stone">{totalWater.toFixed(0)}L / year</span>
+                  </div>
+                  <div className="w-full h-1 bg-black/20 rounded-full overflow-hidden">
+                    <motion.div 
+                      animate={{ width: `${Math.min(totalWater / 10, 100)}%` }}
+                      className="h-full bg-sage" 
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:w-2/3 w-full aspect-square md:aspect-video rounded-[2rem] border-4 border-white/5 relative bg-earth-950 overflow-hidden cursor-crosshair group shadow-inner" onClick={handlePlotClick}>
+            <div className="absolute inset-0 grid-overlay opacity-10" />
+            <div className="absolute inset-0 grain-overlay opacity-5" />
+            
+            <AnimatePresence>
+              {trees.map(tree => {
+                const Icon = treeTypes.find(t => t.id === tree.type)?.icon || Sprout;
+                return (
+                  <motion.div
+                    key={tree.id}
+                    initial={{ scale: 0, opacity: 0, y: 20 }}
+                    animate={{ scale: tree.scale, opacity: 1, y: 0 }}
+                    className="absolute pointer-events-none"
+                    style={{ left: tree.x, top: tree.y }}
+                  >
+                    <motion.div 
+                      animate={{ rotate: [0, 2, -2, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      className={`-translate-x-1/2 -translate-y-1/2 ${treeTypes.find(t => t.id === tree.type)?.color}`}
+                    >
+                      <Icon size={40 * tree.scale} strokeWidth={1.5} />
+                      <div className="w-4 h-1 bg-black/40 blur-sm rounded-full absolute -bottom-4 left-1/2 -translate-x-1/2" />
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+
+            {trees.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-center">
+                  <Target className="w-16 h-16 text-sage/20 mx-auto mb-4 animate-pulse" />
+                  <p className="text-sage/30 font-black italic uppercase tracking-[0.3em]">TAP TO DEPLOY BIOTA</p>
+                </div>
+              </div>
+            )}
+            
+            <div className="absolute top-6 right-6 flex gap-3">
+              <div className="px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-[10px] font-mono text-stone uppercase tracking-widest">
+                PLANTS: {trees.length}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ProgramSection = ({ onProgramAccess }: { onProgramAccess: (e: React.MouseEvent) => void }) => {
   return (
     <section className="py-32 px-8" id="programs">
       <div className="container mx-auto">
@@ -385,6 +616,7 @@ const ProgramSection = () => {
               </div>
 
               <motion.button 
+                onClick={onProgramAccess}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-4 border border-white/10 rounded-xl font-black italic tracking-widest uppercase text-xs text-stone group-hover:bg-sand group-hover:text-earth-950 transition-all"
@@ -399,8 +631,16 @@ const ProgramSection = () => {
   );
 };
 
-const ImpactGame = () => {
+const ImpactGame = ({ onSimulate }: { onSimulate: (amount: number, e: { clientX: number; clientY: number }) => void }) => {
   const [carbon, setCarbon] = useState(0);
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value) * 120;
+    setCarbon(val);
+    if (val % 1000 === 0) {
+      onSimulate(50, { clientX: e.clientX, clientY: e.clientY });
+    }
+  };
 
   return (
     <section className="py-32 relative overflow-hidden" id="impact-sync">
@@ -445,7 +685,7 @@ const ImpactGame = () => {
                     min="0" 
                     max="1000" 
                     step="10"
-                    onChange={(e) => setCarbon(parseInt(e.target.value) * 120)}
+                    onChange={handleSliderChange}
                     className="w-full h-2 bg-earth-900 rounded-lg border border-white/5 appearance-none cursor-pointer accent-clay"
                   />
                 </div>
@@ -530,7 +770,7 @@ const FellowsSection = () => {
   );
 };
 
-const Roadmap = () => {
+const Roadmap = ({ onPhaseEngage }: { onPhaseEngage: (e: React.MouseEvent) => void }) => {
   return (
     <section className="py-32 bg-earth-950" id="roadmap">
       <div className="container mx-auto px-8 text-center mb-24">
@@ -556,6 +796,7 @@ const Roadmap = () => {
               viewport={{ once: true }}
               transition={{ delay: idx * 0.2 }}
               whileHover={{ x: 10 }}
+              onClick={onPhaseEngage}
               className="organic-card p-10 border-l-8 border-l-clay hover:bg-white/10"
             >
                <div className="flex justify-between items-start mb-6">
@@ -662,6 +903,32 @@ const Footer = () => {
 };
 
 export default function App() {
+  const [xp, setXp] = useState(0);
+  const [notifications, setNotifications] = useState<XPNotification[]>([]);
+  
+  const level = Math.floor(xp / 1000) + 1;
+
+  useEffect(() => {
+    if (level > 1) {
+      // Use center of screen for Level Up celebration
+      gainXP(0, window.innerWidth / 2, window.innerHeight / 2);
+    }
+  }, [level]);
+
+  const gainXP = (amount: number, x: number, y: number) => {
+    setXp(prev => prev + amount);
+    const id = Date.now();
+    setNotifications(prev => [...prev, { id, amount, x, y }]);
+  };
+
+  const removeNotification = (id: number) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  const handleInteraction = (amount: number) => (e: React.MouseEvent) => {
+    gainXP(amount, e.clientX, e.clientY);
+  };
+
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -672,13 +939,27 @@ export default function App() {
   return (
     <div className="bg-earth-950 min-h-screen selection:bg-clay selection:text-white">
       <motion.div className="scroll-indicator" style={{ scaleX }} />
-      <Navbar />
-      <Hero />
+      
+      <AnimatePresence>
+        {notifications.map(n => (
+          <XPPopup 
+            key={n.id} 
+            amount={n.amount} 
+            x={n.x} 
+            y={n.y} 
+            onComplete={() => removeNotification(n.id)} 
+          />
+        ))}
+      </AnimatePresence>
+
+      <Navbar xp={xp} level={level} onJoin={handleInteraction(500)} />
+      <Hero onQuestStart={handleInteraction(250)} />
       <ProblemTriangle />
-      <ProgramSection />
-      <ImpactGame />
+      <ProgramSection onProgramAccess={handleInteraction(150)} />
+      <PlantingGame onPlant={(amount, x, y) => gainXP(amount, x, y)} />
+      <ImpactGame onSimulate={(amount, pos) => gainXP(amount, pos.clientX, pos.clientY)} />
       <FellowsSection />
-      <Roadmap />
+      <Roadmap onPhaseEngage={handleInteraction(100)} />
       <Footer />
       
       {/* Background Ambience */}
