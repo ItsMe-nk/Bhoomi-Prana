@@ -163,9 +163,10 @@ const Hero = () => {
       {/* Background Decor */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=2670&auto=format&fit=crop" 
+          src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2670&auto=format&fit=crop" 
           alt="Sustainable crops"
           className="w-full h-full object-cover opacity-20 grayscale brightness-50"
+          referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-linear-to-b from-earth-950/80 via-earth-950/20 to-earth-950" />
       </div>
@@ -329,7 +330,7 @@ const ProblemTriangle = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-terracotta', image: 'https://images.unsplash.com/photo-1509316785289-025f54846b43?q=80&w=2670&auto=format&fit=crop' },
+            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-terracotta', image: 'https://images.unsplash.com/photo-1550252194-67252277d130?q=80&w=2670&auto=format&fit=crop' },
             { tag: 'Air', title: 'Toxic Air', stat: '7/10', desc: "Worst cities for air quality are agricultural hubs.", icon: Wind, accent: 'text-ochre', image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2670&auto=format&fit=crop' },
             { tag: 'Growth', title: 'Stagnated', stat: '7x', desc: "Cost of farming has exploded with no profit return.", icon: Users, accent: 'text-clay', image: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop' },
           ].map((item, idx) => (
@@ -344,9 +345,10 @@ const ProblemTriangle = () => {
             >
               <img 
                 src={item.image} 
-                className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700 pointer-events-none" 
+                className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700 pointer-events-none" 
                 alt={item.title} 
                 loading="lazy"
+                referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-linear-to-t from-earth-950 via-earth-950/20 to-transparent" />
               
@@ -871,10 +873,11 @@ const Newsletter = () => {
     <section className="py-32 bg-earth-900 px-8 relative overflow-hidden" id="join">
       <div className="absolute inset-0 grayscale opacity-10">
         <img 
-          src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop" 
+          src="https://images.unsplash.com/photo-1594498651125-96be06801968?q=80&w=2670&auto=format&fit=crop" 
           alt="Farmland overhead" 
           className="w-full h-full object-cover"
           loading="lazy"
+          referrerPolicy="no-referrer"
         />
       </div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-leaf/5 blur-[120px] -z-10" />
