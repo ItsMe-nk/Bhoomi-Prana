@@ -329,7 +329,7 @@ const ProblemTriangle = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-terracotta', image: 'https://images.unsplash.com/photo-1533758368533-333e61a6c429?q=80&w=2670&auto=format&fit=crop' },
+            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-terracotta', image: 'https://images.unsplash.com/photo-1509316785289-025f54846b43?q=80&w=2670&auto=format&fit=crop' },
             { tag: 'Air', title: 'Toxic Air', stat: '7/10', desc: "Worst cities for air quality are agricultural hubs.", icon: Wind, accent: 'text-ochre', image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2670&auto=format&fit=crop' },
             { tag: 'Growth', title: 'Stagnated', stat: '7x', desc: "Cost of farming has exploded with no profit return.", icon: Users, accent: 'text-clay', image: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop' },
           ].map((item, idx) => (
