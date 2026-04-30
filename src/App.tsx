@@ -113,7 +113,7 @@ const Navbar = () => {
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-6 py-2 bg-clay rounded-full text-white border-b-4 border-earth-brown active:translate-y-1 active:border-b-0 font-bold shadow-lg shadow-clay/20"
+            className="px-6 py-2 bg-clay rounded-full text-white border-b-4 border-sienna active:translate-y-1 active:border-b-0 font-bold shadow-lg shadow-clay/20"
           >
             JOIN THE QUEST
           </motion.button>
@@ -159,7 +159,7 @@ const Hero = () => {
           opacity: [0.1, 0.15, 0.1]
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-clay/10 rounded-full blur-[120px]" 
+        className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-clay/20 rounded-full blur-[120px]" 
       />
       <motion.div 
         animate={{ 
@@ -167,7 +167,7 @@ const Hero = () => {
           opacity: [0.05, 0.1, 0.05]
         }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-moss/10 rounded-full blur-[120px]" 
+        className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-ochre/15 rounded-full blur-[120px]" 
       />
       <div className="grain-overlay absolute inset-0" />
 
@@ -179,7 +179,7 @@ const Hero = () => {
             transition={{ duration: 0.8 }}
             className="mb-6 px-3 py-1 bg-white/5 w-max rounded-md border border-white/10"
           >
-            <span className="text-xs font-mono text-sage tracking-widest uppercase">// MISSION: RESTORE INDIA'S BREATH //</span>
+            <span className="text-xs font-mono text-ochre tracking-widest uppercase">// MISSION: RESTORE INDIA'S BREATH //</span>
           </motion.div>
           
           <motion.h1 
@@ -302,7 +302,7 @@ const ProblemTriangle = () => {
           className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8"
         >
           <div className="max-w-2xl">
-            <div className="mono-tag mb-4 text-sage">// THE CRISIS TRIANGLE //</div>
+            <div className="mono-tag mb-4 text-ochre">// THE CRISIS TRIANGLE //</div>
             <h2 className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-stone">The System <br /> Is Overheating.</h2>
           </div>
           <p className="text-sage/40 max-w-sm text-sm font-medium italic">Chemical-dependent farming is destroying our three core life supports.</p>
@@ -310,9 +310,9 @@ const ProblemTriangle = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-clay' },
-            { tag: 'Air', title: 'Toxic Air', stat: '7/10', desc: "Worst cities for air quality are agricultural hubs.", icon: Wind, accent: 'text-sage' },
-            { tag: 'Growth', title: 'Stagnated', stat: '7x', desc: "Cost of farming has exploded with no profit return.", icon: Users, accent: 'text-moss' },
+            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-terracotta' },
+            { tag: 'Air', title: 'Toxic Air', stat: '7/10', desc: "Worst cities for air quality are agricultural hubs.", icon: Wind, accent: 'text-ochre' },
+            { tag: 'Growth', title: 'Stagnated', stat: '7x', desc: "Cost of farming has exploded with no profit return.", icon: Users, accent: 'text-clay' },
           ].map((item, idx) => (
             <motion.div 
               key={idx}
@@ -360,7 +360,7 @@ const PlantingGame = () => {
   const treeTypes = [
     { id: 'Native', label: 'Native Forest', icon: TreePine, xp: 50, co2: 2.5, water: 100, color: 'text-moss' },
     { id: 'Fruit', label: 'Metti Fruit', icon: Apple, xp: 80, co2: 1.8, water: 45, color: 'text-clay' },
-    { id: 'Medicinal', label: 'Ayurvedic', icon: Leaf, xp: 120, co2: 0.8, water: 30, color: 'text-sage' },
+    { id: 'Medicinal', label: 'Ayurvedic', icon: Leaf, xp: 120, co2: 0.8, water: 30, color: 'text-ochre' },
   ];
 
   const handlePlotClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -385,11 +385,12 @@ const PlantingGame = () => {
   const totalWater = trees.reduce((acc, tree) => acc + (treeTypes.find(t => t.id === tree.type)?.water || 0), 0);
 
   return (
-    <section className="py-32 bg-earth-900 px-8" id="planting-game">
+    <section className="py-32 bg-earth-900 px-8 relative overflow-hidden" id="planting-game">
+      <div className="absolute inset-0 bg-sienna/5 mix-blend-overlay pointer-events-none" />
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row gap-12 items-start">
           <div className="lg:w-1/3">
-            <div className="mono-tag mb-6 text-sage">// RESTORATION FIELD //</div>
+            <div className="mono-tag mb-6 text-ochre">// RESTORATION FIELD //</div>
             <h2 className="text-5xl font-black italic uppercase tracking-tighter text-stone mb-8">Deploy Your <br /> Bio-Assets.</h2>
             <p className="text-sage/70 mb-10 text-lg italic">Select a protocol below and click on the field to start the restoration cycle. Every tree planted increases the district's sync rate.</p>
             
@@ -415,10 +416,10 @@ const PlantingGame = () => {
               ))}
             </div>
 
-            <div className="mt-12 organic-card p-8 border-clay/30 bg-clay/5">
+            <div className="mt-12 organic-card p-8 border-ochre/30 bg-ochre/5">
               <div className="flex justify-between items-center mb-6">
-                <span className="mono-tag text-clay">FIELD IMPACT</span>
-                <TrendingUp className="text-clay w-5 h-5" />
+                <span className="mono-tag text-ochre">FIELD IMPACT</span>
+                <TrendingUp className="text-ochre w-5 h-5" />
               </div>
               <div className="space-y-6">
                 <div>
@@ -441,7 +442,7 @@ const PlantingGame = () => {
                   <div className="w-full h-1 bg-black/20 rounded-full overflow-hidden">
                     <motion.div 
                       animate={{ width: `${Math.min(totalWater / 10, 100)}%` }}
-                      className="h-full bg-sage" 
+                      className="h-full bg-ochre" 
                     />
                   </div>
                 </div>
@@ -449,7 +450,8 @@ const PlantingGame = () => {
             </div>
           </div>
 
-          <div className="lg:w-2/3 w-full aspect-square md:aspect-video rounded-[2rem] border-4 border-white/5 relative bg-earth-950 overflow-hidden cursor-crosshair group shadow-inner" onClick={handlePlotClick}>
+          <div className="lg:w-2/3 w-full aspect-square md:aspect-video rounded-[2rem] border-4 border-white/5 relative bg-earth-950 overflow-hidden cursor-crosshair group shadow-2xl" onClick={handlePlotClick}>
+            <div className="absolute inset-0 bg-linear-to-b from-sienna/10 to-transparent pointer-events-none" />
             <div className="absolute inset-0 grid-overlay opacity-10" />
             <div className="absolute inset-0 grain-overlay opacity-5" />
             
@@ -584,7 +586,7 @@ const ImpactGame = () => {
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
         >
-          <div className="mono-tag mb-4 tracking-[0.5em] text-sage justify-center">// CALCULATE YOUR IMPACT //</div>
+          <div className="mono-tag mb-4 tracking-[0.5em] text-ochre justify-center">// CALCULATE YOUR IMPACT //</div>
           <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-16 text-stone">Carbon Sync <br /> Simulator.</h2>
         </motion.div>
         
@@ -592,9 +594,9 @@ const ImpactGame = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="max-w-2xl mx-auto organic-card p-16 relative group"
+          className="max-w-2xl mx-auto organic-card p-16 relative group border-clay/10"
         >
-          <div className="absolute top-0 right-0 p-4 mono-tag opacity-20 text-sand">LVL 99 ENABLED</div>
+          <div className="absolute top-0 right-0 p-4 mono-tag opacity-20 text-ochre">LVL 99 ENABLED</div>
            <div className="relative z-10">
               <motion.div 
                 key={carbon}
@@ -603,13 +605,13 @@ const ImpactGame = () => {
                 transition={{ type: 'spring', stiffness: 200, damping: 10 }}
                 className="text-8xl md:text-9xl font-black text-clay italic mb-4 tracking-tighter"
               >
-                {carbon.toLocaleString()} <span className="text-4xl text-sage">T</span>
+                {carbon.toLocaleString()} <span className="text-4xl text-ochre">T</span>
               </motion.div>
-              <div className="mono-tag text-sage/40 mb-12 justify-center">Total CO2 Sequestered Quest</div>
+              <div className="mono-tag text-ochre/40 mb-12 justify-center">Total CO2 Sequestered Quest</div>
               
               <div className="space-y-12">
                 <div className="space-y-4">
-                  <div className="flex justify-between mono-tag !text-sage/40">
+                  <div className="flex justify-between mono-tag !text-ochre/40">
                     <span>Fellows Deployed</span>
                     <span className="text-stone">{(carbon / 120).toFixed(0)}</span>
                   </div>
@@ -926,6 +928,14 @@ export default function App() {
       <Navbar />
       <Hero />
       <ProblemTriangle />
+      
+      {/* Background Ambience */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-clay/5 blur-[150px] -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sienna/5 blur-[130px] translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(188,108,37,0.03),transparent_70%)]" />
+      </div>
+
       <ProgramSection />
       <PlantingGame />
       <ImpactGame />
@@ -934,12 +944,6 @@ export default function App() {
       <TrustSection />
       <Newsletter />
       <Footer />
-      
-      {/* Background Ambience */}
-      <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-        <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-clay/5 blur-[180px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] bg-moss/5 blur-[180px] rounded-full animate-pulse [animation-delay:4s]" />
-      </div>
     </div>
   );
 }
