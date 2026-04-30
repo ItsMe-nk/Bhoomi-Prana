@@ -110,13 +110,15 @@ const Navbar = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-clay transition-all group-hover:w-full" />
             </motion.a>
           ))}
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-6 py-2 bg-clay rounded-full text-white border-b-4 border-sienna active:translate-y-1 active:border-b-0 font-bold shadow-lg shadow-clay/20"
-          >
-            JOIN THE QUEST
-          </motion.button>
+          <a href="#join">
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-2 bg-clay rounded-full text-white border-b-4 border-sienna active:translate-y-1 active:border-b-0 font-bold shadow-lg shadow-clay/20"
+            >
+              JOIN THE QUEST
+            </motion.button>
+          </a>
         </div>
 
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
@@ -150,24 +152,41 @@ const Navbar = () => {
 };
 
 const Hero = () => {
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
+  const y2 = useTransform(scrollY, [0, 500], [0, -150]);
+  const rotate1 = useTransform(scrollY, [0, 1000], [0, 45]);
+  const rotate2 = useTransform(scrollY, [0, 1000], [0, -30]);
+
   return (
     <section className="min-h-screen pt-32 pb-20 relative flex items-center overflow-hidden">
       {/* Background Decor */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=2670&auto=format&fit=crop" 
+          alt="Sustainable crops"
+          className="w-full h-full object-cover opacity-20 grayscale brightness-50"
+        />
+        <div className="absolute inset-0 bg-linear-to-b from-earth-950/80 via-earth-950/20 to-earth-950" />
+      </div>
+
       <motion.div 
+        style={{ y: y1, rotate: rotate1 }}
         animate={{ 
           scale: [1, 1.1, 1],
           opacity: [0.1, 0.15, 0.1]
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-clay/20 rounded-full blur-[120px]" 
+        className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-leaf/20 rounded-full blur-[120px]" 
       />
       <motion.div 
+        style={{ y: y2, rotate: rotate2 }}
         animate={{ 
           scale: [1, 1.2, 1],
           opacity: [0.05, 0.1, 0.05]
         }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-ochre/15 rounded-full blur-[120px]" 
+        className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-clay/15 rounded-full blur-[120px]" 
       />
       <div className="grain-overlay absolute inset-0" />
 
@@ -240,15 +259,15 @@ const Hero = () => {
             className="organic-card p-8 cursor-default"
           >
             <div className="flex justify-between items-end mb-4">
-              <h3 className="mono-tag text-sage/50">Global Restoration Sync</h3>
-              <span className="text-sage font-black italic tracking-tighter">88% SYNCED</span>
+              <h3 className="mono-tag text-ochre/50">Global Restoration Sync</h3>
+              <span className="text-ochre font-black italic tracking-tighter">88% SYNCED</span>
             </div>
             <div className="w-full h-12 bg-earth-900 rounded-xl border border-white/5 relative overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: '88%' }}
                 transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1], delay: 1 }}
-                className="h-full bg-linear-to-r from-clay to-sage" 
+                className="h-full bg-linear-to-r from-clay to-ochre" 
               />
               <div className="absolute inset-0 flex items-center justify-center font-black text-[10px] tracking-[0.2em] mix-blend-difference pointer-events-none text-stone">
                 50,000+ FARMERS ENROLLED
@@ -261,11 +280,11 @@ const Hero = () => {
             className="organic-card p-8 !bg-moss/10 !border-moss/20 cursor-default"
           >
             <h3 className="text-sm font-black uppercase mb-6 flex items-center gap-2 tracking-widest text-stone">
-              <span className="w-2 h-2 bg-sage rounded-full animate-pulse"></span> Live Impact Feed
+              <span className="w-2 h-2 bg-ochre rounded-full animate-pulse"></span> Live Impact Feed
             </h3>
             <div className="space-y-4">
               {[
-                { user: 'Zoe_Green', msg: 'Soil sync complete in Karnataka! +500 XP' },
+                { user: 'Zoe_Green', msg: 'Soil sync complete in Karnataka! +500 BIO' },
                 { user: 'Krishi_01', msg: 'Metti Lab #4 is now operational. 🌿' }
               ].map((feed, i) => (
                 <motion.div 
@@ -310,9 +329,9 @@ const ProblemTriangle = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-terracotta' },
-            { tag: 'Air', title: 'Toxic Air', stat: '7/10', desc: "Worst cities for air quality are agricultural hubs.", icon: Wind, accent: 'text-ochre' },
-            { tag: 'Growth', title: 'Stagnated', stat: '7x', desc: "Cost of farming has exploded with no profit return.", icon: Users, accent: 'text-clay' },
+            { tag: 'Soil', title: 'Dead Soil', stat: '30%', desc: "Land is degraded and biological activity is zero.", icon: Sprout, accent: 'text-terracotta', image: 'https://images.unsplash.com/photo-1533758368533-333e61a6c429?q=80&w=2670&auto=format&fit=crop' },
+            { tag: 'Air', title: 'Toxic Air', stat: '7/10', desc: "Worst cities for air quality are agricultural hubs.", icon: Wind, accent: 'text-ochre', image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2670&auto=format&fit=crop' },
+            { tag: 'Growth', title: 'Stagnated', stat: '7x', desc: "Cost of farming has exploded with no profit return.", icon: Users, accent: 'text-clay', image: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop' },
           ].map((item, idx) => (
             <motion.div 
               key={idx}
@@ -320,22 +339,29 @@ const ProblemTriangle = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.2 }}
-              whileHover={{ 
-                y: -15, 
-                scale: 1.02,
-                transition: { type: 'spring', stiffness: 300, damping: 10 }
-              }}
-              className="organic-card p-10 flex flex-col items-start group cursor-default"
+              whileHover={{ y: -15, scale: 1.02 }}
+              className="organic-card group relative h-[500px] overflow-hidden cursor-default"
             >
-              <motion.div
-                whileHover={{ rotate: 15 }}
-                transition={{ type: 'spring', stiffness: 400 }}
-              >
-                <item.icon className={`${item.accent} w-10 h-10 mb-8 transition-transform group-hover:scale-125`} />
-              </motion.div>
-              <h3 className="text-6xl font-black mb-2 tracking-tighter italic text-stone">{item.stat}</h3>
-              <div className="mono-tag mb-6 text-sand/50">{item.title}</div>
-              <p className="text-sage/70 text-sm leading-relaxed">{item.desc}</p>
+              <img 
+                src={item.image} 
+                className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700 pointer-events-none" 
+                alt={item.title} 
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-earth-950 via-earth-950/20 to-transparent" />
+              
+              <div className="relative p-10 h-full flex flex-col justify-end">
+                <motion.div
+                  whileHover={{ rotate: 15 }}
+                  transition={{ type: 'spring', stiffness: 400 }}
+                  className={`p-4 bg-white/5 backdrop-blur-md rounded-2xl w-max mb-8 border border-white/10 ${item.accent}`}
+                >
+                  <item.icon size={40} className="transition-transform group-hover:scale-110" />
+                </motion.div>
+                <h3 className="text-6xl font-black mb-2 tracking-tighter italic text-stone group-hover:text-terracotta transition-colors">{item.stat}</h3>
+                <div className="mono-tag mb-4 text-ochre/80">{item.title}</div>
+                <p className="text-sage font-medium italic text-sm leading-relaxed max-w-[250px]">{item.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -715,7 +741,7 @@ const Roadmap = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="mono-tag mb-4 tracking-[0.5em] text-sage justify-center">// DEPLOYMENT PROTOCOL //</div>
+          <div className="mono-tag mb-4 tracking-[0.5em] text-ochre justify-center">// DEPLOYMENT PROTOCOL //</div>
           <h2 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter leading-none mb-10 text-stone">The 3-Year <br /> <span className="text-gradient">Scale.</span></h2>
         </motion.div>
         
@@ -744,7 +770,7 @@ const Roadmap = () => {
                   transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
                   className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-clay font-black italic border border-white/5"
                  >
-                   XP
+                   BIO
                  </motion.div>
                </div>
                <ul className="grid md:grid-cols-3 gap-6">
@@ -842,8 +868,16 @@ const Newsletter = () => {
   const [subscribed, setSubscribed] = useState(false);
 
   return (
-    <section className="py-32 bg-earth-900 px-8 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-clay/5 blur-[120px] -z-10" />
+    <section className="py-32 bg-earth-900 px-8 relative overflow-hidden" id="join">
+      <div className="absolute inset-0 grayscale opacity-10">
+        <img 
+          src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2670&auto=format&fit=crop" 
+          alt="Farmland overhead" 
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-leaf/5 blur-[120px] -z-10" />
       <div className="container mx-auto max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
